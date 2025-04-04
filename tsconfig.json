@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "module": "commonjs",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strict": false
+  },
+  "include": ["src/**/*","src/electron.d.ts"],
+
+
+}
