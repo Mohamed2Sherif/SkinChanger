@@ -1,4 +1,3 @@
-console.log('Happy developing ✨')
 async function populateCards() {
 
 

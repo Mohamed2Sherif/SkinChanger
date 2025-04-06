@@ -7,19 +7,47 @@
   "scripts": {
     "dev": "electron src/",
     "start": "npm run compile && electron build/main.js",
-    "compile": "tsc && copyfiles -f src/static/index.html ./build/"
+    "compile": "tsc",
+    "dist": " tsc && cd exalted_skins_react && npm run build && cd .. && electron-builder "
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
-    "axios": "^1.8.4"
+    "axios": "^1.8.4",
+    "electron-is-dev": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
     "copyfiles": "^2.4.1",
     "electron": "^35.1.3",
+    "electron-builder": "^26.0.12",
     "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
+  },
+  "build": {
+    "appId": "com.example.ExaltedSkinsMS",
+    "productName": "Exalted Skins By M.S",
+    "asarUnpack": [
+      "db/ExaltedSkins.db"
+    ],
+    "files": [
+      "build/**/*",
+      "prisma/**/*",
+      "src/cslol-tools/**/*",
+      "src/config.ini",
+      "db/ExaltedSkins.db"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "asar": false
+  },
+  "win": {
+    "icon": "icon.ico",
+    "target": "nsis"
+  },
+  "nsis": {
+
   },
   "private": true
 }

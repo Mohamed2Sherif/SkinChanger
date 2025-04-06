@@ -1,7 +1,33 @@
-import {PrismaClient, Role} from '@prisma/client'
+import {PrismaClient, Role} from '../prisma/src/generated/prisma/client'
 import axios from "axios";
+import isDev from "electron-is-dev";
+import path from "path";
+
 // Initialize Prisma
-const prisma = new PrismaClient();
+
+function createPrismaClient() {
+    return new PrismaClient();
+}
+
+// Initialize Prisma client with the new DATABASE_URL
+function updateDatabaseUrlAndReinitialize() {
+    const dbPath =
+        isDev
+        ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
+        path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
+
+// Normalize the path to ensure cross-platform compatibility
+    const dbUrl = `file:${path.normalize(dbPath)}`;
+
+// Set DATABASE_URL before initializing Prisma
+    process.env.DATABASE_URL = dbUrl;
+    // Re-initialize Prisma Client
+    const prisma = createPrismaClient();
+    return prisma;
+}
+
+// Example usage
+const prisma = updateDatabaseUrlAndReinitialize();
 
 const champions_endpoint_uri = "https://ddragon.leagueoflegends.com/cdn/15.6.1/data/en_US/champion.json";
 
@@ -109,11 +135,11 @@ class DatabaseSeeder {
                     },
                     roles: {
                         create: champ.roles.map(role => ({
-                                role: {
-                                    connect:{
-                                            role_id:role.role_id
-                                    }
-                                },
+                            role: {
+                                connect: {
+                                    role_id: role.role_id
+                                }
+                            },
                         })),
                     }
 
