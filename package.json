@@ -29,14 +29,16 @@
     "asarUnpack": [
       "db/ExaltedSkins.db",
       "src/cslol-tools/**/*",
-      "src/config.ini"
+      "src/config.ini",
+      "depend/Git-2.45.2-64-bit"
     ],
     "files": [
       "build/**/*",
       "prisma/**/*",
       "src/cslol-tools/**/*",
       "src/config.ini",
-      "db/ExaltedSkins.db"
+      "db/ExaltedSkins.db",
+      "depend/Git-2.45.2-64-bit"
     ],
     "directories": {
       "output": "dist"
