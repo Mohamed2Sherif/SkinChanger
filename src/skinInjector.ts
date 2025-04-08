@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const injectorPath = isDev? path.join(process.cwd(),"./src/cslol-tools/mod-tools.exe"): path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'cslol-tools', "mod-tools.exe");
 
 const gamePath = "d:/Games/LeagueofLegends/League of Legends/Game"; // Just use the path as a string
-const skinsPath = isDev? path.join(process.cwd(),"./lol-skins/skins"):path.resolve(process.cwd(), "./lol-skins/skins")
+const skinsPath = isDev? path.join(process.cwd(),"./lol-skins-developer/"):path.resolve(process.cwd(), "./lol-skins-developer/")
 const config_file_path = isDev? path.join(process.cwd(),"./src/config.ini"):path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'config.ini');
 // Function to run the command
 const eventEmitter = new EventEmitter();
@@ -57,7 +57,7 @@ export async function injector_pipeline(champId_skin_names: Map<string, string>)
             const skinPath = path.join(skinsPath,champId,cleanedSkinName);
             const importOutput = await runCommand(injectorPath, [
                 "import",
-                `"${skinPath}.zip"`,
+                `"${skinPath}.fantome"`,
                 `./Installed/"${skin_name.replace("/"," ")}"`,
                 `--game:"${gamePath}"`, // Wrap the game path in quotes
                 "--noTFT"

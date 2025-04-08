@@ -41,7 +41,7 @@ const ChampionGrid = () => {
                 >
                     <img
                         src={champ.image_url}
-                        alt={champ.id}
+                        alt={champ.champ_code}
                         className="w-20 h-20 rounded-lg border-2 border-[#292b40] hover:border-[#626890] transition"
                     />
                     <span className="text-white text-sm mt-2">{champ.champ_name}</span>

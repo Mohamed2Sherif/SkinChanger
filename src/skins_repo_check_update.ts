@@ -4,7 +4,7 @@ import path from "path";
 
 
 // Function to run the command
-const skinsRepoUrl = "https://github.com/koobzaar/lol-skins/"
+const skinsRepoUrl = "https://github.com/darkseal-org/lol-skins-developer"
 function runCommand(command: string, params: string[], options = {}) {
     return new Promise<string>((resolve, reject) => {
         const child = exec(command + " " + params.join(" "), options, (error, stdout, stderr) => {
@@ -26,7 +26,7 @@ function runCommand(command: string, params: string[], options = {}) {
 
 // Function to check if folder exists and clone if not
 export async function checkAndCloneSkinsFolder() {
-    const skinsDir = path.resolve(process.cwd(), "./lol-skins");
+    const skinsDir = path.resolve(process.cwd(), "./lol-skins-developer");
 
     if (!fs.existsSync(skinsDir)) {
         console.log("Skins folder not found, cloning repository...");

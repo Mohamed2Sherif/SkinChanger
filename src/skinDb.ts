@@ -35,7 +35,8 @@ const champions_endpoint_uri = "https://ddragon.leagueoflegends.com/cdn/15.6.1/d
 // Interfaces for Champions and Skins
 
 interface Champion {
-    id: string,
+    id: number,
+    champ_code:string,
     champ_name: string,
     image_url: string,
     skins: Skin[],
@@ -74,7 +75,8 @@ class DatabaseSeeder {
                 // @ts-ignore
                 // @ts-ignore
                 return {
-                    id: champ.id,
+                    id:parseInt(champ.key),
+                    champ_code: champ.id,
                     champ_name: champ.name,
                     image_url: `https://ddragon.leagueoflegends.com/cdn/15.6.1/img/champion/${champ.image.full}`,
                     roles: await Promise.all(
@@ -125,6 +127,7 @@ class DatabaseSeeder {
                 update: {},
                 create: {
                     id: champ.id,
+                    champ_code:champ.champ_code,
                     champ_name: champ.champ_name,
                     image_url: champ.image_url,
                     skins: {

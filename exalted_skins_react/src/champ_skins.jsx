@@ -41,7 +41,7 @@ const ChampionSkins = ({ champId }) => {
                      onClick={() => handleSkinSelected(skin,setShowSuccess,setShowError)}
                 >
                     <img
-                        src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${skin.champ_id}_${skin.skin_number}.jpg`}
+                        src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${skin.champion.champ_code}_${skin.skin_number}.jpg`}
                         alt={skin.skin_name}
                         className="w-308 h-560 rounded-lg border-2 border-[#292b40] hover:border-[#626890] transition"
                     />

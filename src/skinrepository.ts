@@ -9,7 +9,7 @@ function createPrismaClient() {
 function updateDatabaseUrlAndReinitialize() {
     const isDev = process.env.NODE_ENV === 'development'
     const dbPath =
-            isDev
+        isDev
             ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
             path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
 
@@ -41,16 +41,25 @@ export async function get_champion_roles_list() {
                         }
                     }
             },
+        orderBy:{
+                champ_name:'asc'
+        }
         },
+
     )
 }
 
-export async function get_champion_skins(champion_id: string) {
+export async function get_champion_skins(champion_id: number) {
     return await prisma.skin.findMany({
-        where: {champ_id: champion_id},
-        include:{
-            champion:{
-                select:{champ_name:true}
+        where: {champ_id:champion_id},
+        include: {
+            champion: {
+                select:
+                    {
+                        id:true,
+                        champ_name: true
+                        ,champ_code: true
+                    }
             }
         }
     })

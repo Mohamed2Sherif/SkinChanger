@@ -23,7 +23,7 @@ function createWindow() {
     const isDev = process.env.NODE_ENV === 'development'
     const startURL =
         isDev
-            ? `${path.join(__dirname, 'index.html')}`  // In dev mode, use the file URL directly
+            ? `http://localhost:3001/`  // In dev mode, use the file URL directly
             : `${path.join(__dirname,'index.html')}`;  //
     console.log(startURL)
     win.loadURL(startURL);
@@ -32,7 +32,7 @@ function createWindow() {
 
 app.whenReady().then( async () => {
     ipcMain.handle('get_champions_roles', async () => await get_champion_roles_list())
-    ipcMain.handle("get_champion_skins", async (_event, champ_id: string) => {
+    ipcMain.handle("get_champion_skins", async (_event, champ_id: number) => {
 
         return await get_champion_skins(champ_id);
     });
