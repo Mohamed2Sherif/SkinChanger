@@ -1,6 +1,5 @@
 import {PrismaClient, Role} from '../prisma/src/generated/prisma/client'
 import axios from "axios";
-import isDev from "electron-is-dev";
 import path from "path";
 
 // Initialize Prisma
@@ -11,10 +10,11 @@ function createPrismaClient() {
 
 // Initialize Prisma client with the new DATABASE_URL
 function updateDatabaseUrlAndReinitialize() {
+    const isDev = process.env.NODE_ENV === 'development'
     const dbPath =
         isDev
-        ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
-        path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
+            ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
+            path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
 
 // Normalize the path to ensure cross-platform compatibility
     const dbUrl = `file:${path.normalize(dbPath)}`;
@@ -28,6 +28,7 @@ function updateDatabaseUrlAndReinitialize() {
 
 // Example usage
 const prisma = updateDatabaseUrlAndReinitialize();
+
 
 const champions_endpoint_uri = "https://ddragon.leagueoflegends.com/cdn/15.6.1/data/en_US/champion.json";
 

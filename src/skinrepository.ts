@@ -1,5 +1,4 @@
 import {PrismaClient} from "../prisma/src/generated/prisma/client"
-import isDev from "electron-is-dev";
 import path from "path";
 
 function createPrismaClient() {
@@ -8,6 +7,7 @@ function createPrismaClient() {
 
 // Initialize Prisma client with the new DATABASE_URL
 function updateDatabaseUrlAndReinitialize() {
+    const isDev = process.env.NODE_ENV === 'development'
     const dbPath =
             isDev
             ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
@@ -48,5 +48,10 @@ export async function get_champion_roles_list() {
 export async function get_champion_skins(champion_id: string) {
     return await prisma.skin.findMany({
         where: {champ_id: champion_id},
+        include:{
+            champion:{
+                select:{champ_name:true}
+            }
+        }
     })
 }

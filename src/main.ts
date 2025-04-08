@@ -1,16 +1,13 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
-import path from 'path'; // Make sure you're importing path correctly
-import {get_champion_roles_list, get_champion_skins} from './skinrepository';
-import isDev from "electron-is-dev";
 import fs from "fs"
 import {injector_pipeline} from "./skinInjector";
 import {check_git_exist} from "./git_check";
 import {checkAndCloneSkinsFolder} from "./skins_repo_check_update";
-import "./skinDb"
-// Get the correct directory path
-const logPath = path.join(__dirname, 'startup-crash.log');
-const log = (msg) => fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
+import "./skinDb";
+import {get_champion_roles_list, get_champion_skins} from './skinrepository';
+import {app, BrowserWindow, ipcMain} from 'electron';
+import path from 'path'; // Make sure you're importing path correctly;
 
+// Get the correct directory path
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
@@ -23,6 +20,7 @@ function createWindow() {
         }
     });
 
+    const isDev = process.env.NODE_ENV === 'development'
     const startURL =
         isDev
             ? `${path.join(__dirname, 'index.html')}`  // In dev mode, use the file URL directly
@@ -54,13 +52,13 @@ app.on('window-all-closed', () => {
     }
 });
 process.on('uncaughtException', (err) => {
-    fs.appendFileSync(logPath, `[UNCAUGHT EXCEPTION] ${err.stack || err}\n`);
+    fs.appendFileSync('log.txt',`[UNCAUGHT EXCEPTION] ${err.stack || err}\n`);
     process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
 
     // @ts-ignore
-    fs.appendFileSync(logPath, `[UNHANDLED REJECTION] ${reason.stack || reason}\n`);
+    fs.appendFileSync("log.txt", `[UNHANDLED REJECTION] ${reason.stack || reason}\n`);
     process.exit(1);
 });

@@ -4,9 +4,10 @@
     "module": "commonjs",
     "outDir": "./build",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // Add this line
     "strict": false
   },
-  "include": ["src/**/*","src/electron.d.ts"],
+  "include": ["src/**/*"],
 
 
 }

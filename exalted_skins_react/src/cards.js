@@ -7,7 +7,7 @@ export async function populateCards() {
 
 export async function handleSkinSelected(skin, setShowSuccess, setShowError) {
     // Construct key
-    const key = `${skin.champ_id}`;
+    const key = `${skin.champion.champ_name}`;
     const s_value = `${skin.skin_name}`;
     // Create Map and set the entry
     const skinMap = new Map();

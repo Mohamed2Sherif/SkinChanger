@@ -1,6 +1,5 @@
 /tmp
 /out-tsc
-/src/lol-skins
 /node_modules
 /src/cslol-tools/dst
 /src/cslol-tools/Installed
@@ -11,3 +10,5 @@ yarn-error.log*
 .pnp.js
 .env
 .vscode/*
+/lol-skins/
+/lol-skins/
