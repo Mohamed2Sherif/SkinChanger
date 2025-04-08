@@ -1,6 +1,5 @@
 import { exec, execFile } from "child_process";
-import https from "https";
-import fs from "fs";
+
 import path from "path";
 import os from "os";
 import { app, dialog, shell } from "electron";
