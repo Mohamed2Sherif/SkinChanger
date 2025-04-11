@@ -41,26 +41,41 @@ export async function get_champion_roles_list() {
                         }
                     }
             },
-        orderBy:{
-                champ_name:'asc'
-        }
+            orderBy: {
+                champ_name: 'asc'
+            }
         },
-
     )
 }
 
 export async function get_champion_skins(champion_id: number) {
     return await prisma.skin.findMany({
-        where: {champ_id:champion_id},
+        where: {champ_id: champion_id},
         include: {
             champion: {
                 select:
                     {
-                        id:true,
+                        id: true,
                         champ_name: true
-                        ,champ_code: true
+                        , champ_code: true
                     }
             }
         }
     })
+}
+
+export async function updateGamePath(gamePath: string) {
+    await prisma.gameSettings.upsert({
+        where: {settings_Id: "default"},
+        update: {game_path: gamePath},
+        create: {
+            settings_Id: "default",
+            game_path: gamePath
+        }
+    });
+    return true
+}
+
+export async function getGamePath() {
+    return await prisma.gameSettings.findFirst({where: {settings_Id: "default"}});
 }

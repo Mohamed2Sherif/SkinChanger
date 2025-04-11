@@ -1,12 +1,15 @@
-import React, { useEffect, useState,useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { populateCards } from "./cards";
-import ChampionSkins from "./champ_skins"; // 👈 Import the skin view
-import "./styles/index.css";
+import ChampionSkins from "./champ_skins";
+import { useNavigate } from "react-router-dom"; // 👈 Import useNavigate
+import { FiSettings } from "react-icons/fi"; // 👈 Import settings icon (you can use any icon library)
 
 const ChampionGrid = () => {
     const [champions, setChampions] = useState([]);
-    const [selectedChampion, setSelectedChampion] = useState(null); // 👈 Track selected champ
-    const [searchTerm, setSearchTerm] = useState(""); // 👈 New state for search term
+    const [selectedChampion, setSelectedChampion] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate(); // 👈 Initialize navigate
+
     useEffect(() => {
         const fetchChampions = async () => {
             const champs = await populateCards();
@@ -15,13 +18,14 @@ const ChampionGrid = () => {
 
         fetchChampions();
     }, []);
+
     const filteredChampions = useMemo(() => {
         return champions.filter(champ =>
             champ.champ_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             champ.champ_code.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [champions, searchTerm]);
-    // 🧠 If a champ is selected, show skins instead of grid
+
     if (selectedChampion) {
         return (
             <div>
@@ -38,15 +42,26 @@ const ChampionGrid = () => {
 
     return (
         <div className="p-6 bg-[#15172b]">
-            {/* 👇 Search Box */}
-            <div className="mb-6  center">
-                <input
-                    type="text"
-                    placeholder="Search champions..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-3  rounded-lg bg-[#292b40] text-white placeholder-[#626890] focus:outline-none focus:ring-2 focus:ring-[#626890]"
-                />
+            {/* Search Box and Settings */}
+            <div className="mb-6 flex items-center gap-4">
+                <div className="flex-1">
+                    <input
+                        type="text"
+                        placeholder="Search champions..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full p-3 rounded-lg bg-[#292b40] text-white placeholder-[#626890] focus:outline-none focus:ring-2 focus:ring-[#626890]"
+                    />
+                </div>
+                <div>
+                    <button
+                        onClick={() => navigate('/settings')} // 👈 Navigate to settings
+                        className="p-3 rounded-lg bg-[#292b40] text-white hover:bg-[#44485f] transition"
+                        aria-label="Settings"
+                    >
+                        <FiSettings size={20} /> {/* 👈 Settings icon */}
+                    </button>
+                </div>
             </div>
 
             {/* Champion Grid */}

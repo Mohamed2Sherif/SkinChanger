@@ -12,25 +12,25 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
-    "axios": "^1.8.4",
-    "electron": "^35.1.4"
+    "axios": "^1.8.4"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
     "copyfiles": "^2.4.1",
+    "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
     "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "build": {
-    "appId": "com.example.ExaltedSkinsMS",
-    "productName": "Exalted Skins By M.S",
+    "appId": "com.example.Master_Shifo_Skins",
+    "productName": "Master Shifo SKins",
     "asarUnpack": [
       "db/ExaltedSkins.db",
       "src/cslol-tools/**/*",
       "src/config.ini",
-      "depend/Git-2.45.2-64-bit"
+      "depend/Git-2.45.2-64-bit.exe"
     ],
     "files": [
       "build/**/*",
@@ -38,7 +38,7 @@
       "src/cslol-tools/**/*",
       "src/config.ini",
       "db/ExaltedSkins.db",
-      "depend/Git-2.45.2-64-bit"
+      "depend/Git-2.45.2-64-bit.exe"
     ],
     "directories": {
       "output": "dist"
