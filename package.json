@@ -25,20 +25,18 @@
   },
   "build": {
     "appId": "com.example.Master_Shifo_Skins",
-    "productName": "Master Shifo SKins",
+    "productName": "Master Shifo Skins",
     "asarUnpack": [
       "db/ExaltedSkins.db",
       "src/cslol-tools/**/*",
-      "src/config.ini",
-      "depend/Git-2.45.2-64-bit.exe"
+      "src/config.ini"
     ],
     "files": [
       "build/**/*",
       "prisma/**/*",
       "src/cslol-tools/**/*",
       "src/config.ini",
-      "db/ExaltedSkins.db",
-      "depend/Git-2.45.2-64-bit.exe"
+      "db/ExaltedSkins.db"
     ],
     "directories": {
       "output": "dist"

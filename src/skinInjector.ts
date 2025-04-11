@@ -5,6 +5,7 @@ import fs from 'fs';
 import {getGamePath} from "./skinrepository";
 const isDev = process.env.NODE_ENV === 'development'
 import {GameSettings, PrismaClient} from "../prisma/src/generated/prisma/client"
+import https from 'https';
 const injectorPath = isDev ? path.join(process.cwd(), "./src/cslol-tools/mod-tools.exe") : path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'cslol-tools', "mod-tools.exe");
 
 const pathgetter = () => {
@@ -24,7 +25,7 @@ getPathFn().then(path => {
     gamePath = path.game_path;
     console.log("Game path set to:", gamePathobj);
 });// Just use the path as a string
-const skinsPath = isDev ? path.join(process.cwd(), "./lol-skins-developer/") : path.resolve(process.cwd(), "./lol-skins-developer/")
+const skinsPath = isDev ? path.join(process.cwd(), "./skinfiles/") : path.resolve(process.cwd(), "./skinfiles/")
 const config_file_path = isDev ? path.join(process.cwd(), "./src/config.ini") : path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'config.ini');
 // Function to run the command
 const eventEmitter = new EventEmitter();
@@ -72,6 +73,7 @@ export async function injector_pipeline(champId_skin_names: Map<string, string>)
         for (const [champId, skin_name] of champId_skin_names.entries()) {
             const cleanedSkinName = skin_name.replace("/", "");
             const skinPath = path.join(skinsPath, champId, cleanedSkinName);
+            await fetchAndSaveSkinFile(champId,skin_name)
             const importOutput = await runCommand(injectorPath, [
                 "import",
                 `"${skinPath}.fantome"`,
@@ -109,3 +111,38 @@ export async function injector_pipeline(champId_skin_names: Map<string, string>)
 
 // Call the async function to run commands sequentially
 
+async function fetchAndSaveSkinFile(champNum:string,skin_number:string) {
+    const owner = 'darkseal-org';
+    const repo = 'lol-skins-developer';
+    const branch = 'main';
+    const skin_path = `${champNum}/${skin_number}.fantome`;
+    const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${skin_path}`;
+    const outputDir = path.resolve(process.cwd(), `./skinfiles/${champNum}`);
+    const outputPath = path.join(outputDir, `${skin_number}.fantome`);
+
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    return new Promise((resolve, reject) => {
+        https.get(rawUrl, (response) => {
+            if (response.statusCode !== 200) {
+                reject(new Error(`HTTP error! status: ${response.statusCode}`));
+                return;
+            }
+
+            const fileStream = fs.createWriteStream(outputPath);
+            response.pipe(fileStream);
+
+            fileStream.on('finish', () => {
+                fileStream.close();
+                resolve(outputPath);
+            });
+
+            fileStream.on('error', (err) => {
+                fs.unlink(outputPath, () => reject(err));
+            });
+        }).on('error', reject);
+    });
+}
