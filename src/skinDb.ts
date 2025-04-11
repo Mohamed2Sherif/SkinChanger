@@ -1,160 +1,207 @@
-import {PrismaClient, Role} from '../prisma/src/generated/prisma/client'
+import { PrismaClient } from '../prisma/src/generated/prisma/client';
 import axios from "axios";
 import path from "path";
+import EventEmitter from "events";
 
-// Initialize Prisma
+// Initialize EventEmitter
+const eventemitter = new EventEmitter();
 
+// Database Initialization
 function createPrismaClient() {
     return new PrismaClient();
 }
 
-// Initialize Prisma client with the new DATABASE_URL
 function updateDatabaseUrlAndReinitialize() {
-    const isDev = process.env.NODE_ENV === 'development'
-    const dbPath =
-        isDev
-            ? path.join(__dirname, '../db', 'ExaltedSkins.db') :
-            path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
+    const isDev = process.env.NODE_ENV === 'development';
+    const dbPath = isDev
+        ? path.join(__dirname, '../db', 'ExaltedSkins.db')
+        : path.join(process.resourcesPath, 'app.asar.unpacked', 'db', 'ExaltedSkins.db');
 
-// Normalize the path to ensure cross-platform compatibility
     const dbUrl = `file:${path.normalize(dbPath)}`;
-
-// Set DATABASE_URL before initializing Prisma
     process.env.DATABASE_URL = dbUrl;
-    // Re-initialize Prisma Client
-    const prisma = createPrismaClient();
-    return prisma;
+    return createPrismaClient();
 }
 
-// Example usage
 const prisma = updateDatabaseUrlAndReinitialize();
 
-
-const champions_endpoint_uri = "https://ddragon.leagueoflegends.com/cdn/15.6.1/data/en_US/champion.json";
-
-// Interfaces for Champions and Skins
-
+// Interfaces
 interface Champion {
-    id: number,
-    champ_code:string,
-    champ_name: string,
-    image_url: string,
-    skins: Skin[],
-    roles: Champion_Role[]
+    id: number;
+    champ_code: string;
+    champ_name: string;
+    image_url: string;
+    skins: Skin[];
+    roles: ChampionRole[];
 }
 
-interface Champion_Role {
-    role_id: number,
-    role_name: string,
-
+interface ChampionRole {
+    role_id: number;
+    role_name: string;
 }
 
-export interface Skin {
+interface Skin {
     skin_id: string;
     name: string;
     number: number;
 }
 
-// Fetch champion details
-async function GetChampionDetails(champId: string) {
-    let response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/15.6.1/data/en_US/champion/${champId}.json`);
-    return response.data.data;
-}
-
 class DatabaseSeeder {
     private champions_list: Champion[] = [];
-    private roles: string[] = ["Marksman", "Fighter", "Assassin", "Mage", "Support", "Tank"]
+    private readonly roles = ["Marksman", "Fighter", "Assassin", "Mage", "Support", "Tank"];
+    private apiVersion: string = "";
+
+    private async getApiVersion(): Promise<string> {
+        const response = await axios.get("https://ddragon.leagueoflegends.com/api/versions.json");
+        return response.data[0];
+    }
+
+    private async getChampionDetails(champId: string): Promise<any> {
+        return axios.get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`)
+            .then(response => response.data.data);
+    }
 
     public async fetchChampionsInfo(): Promise<void> {
-        let response = await axios.get(champions_endpoint_uri);
-        let champions_response = response.data.data;
+        this.apiVersion = await this.getApiVersion();
+        const championsEndpoint = `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion.json`;
+
+        const response = await axios.get(championsEndpoint);
+        const championsResponse = response.data.data;
 
         this.champions_list = await Promise.all(
-            Object.values(champions_response).map(async (champ: any) => {
-                const champ_info = await GetChampionDetails(champ.id);
-                // @ts-ignore
-                // @ts-ignore
+            Object.values(championsResponse).map(async (champ: any) => {
+                const champInfo = await this.getChampionDetails(champ.id);
+                const tags = champInfo?.[champ.id]?.tags || [];
+
+                const roles = await Promise.all(
+                    tags.map(async (tag: string) => {
+                        const role = await prisma.role.findFirst({
+                            where: { role_name: tag }
+                        });
+                        return {
+                            role_id: role?.role_id || 0,
+                            role_name: role?.role_name || tag
+                        };
+                    })
+                ).then(results => results.filter(r => r.role_id !== 0));
+
                 return {
-                    id:parseInt(champ.key),
+                    id: parseInt(champ.key),
                     champ_code: champ.id,
                     champ_name: champ.name,
-                    image_url: `https://ddragon.leagueoflegends.com/cdn/15.6.1/img/champion/${champ.image.full}`,
-                    roles: await Promise.all(
-                        (champ_info?.[champ.id]?.tags || []).map(async (tag) => {
-                            const role = await prisma.role.findFirst({
-                                where: {role_name: tag}
-                            });
-
-                            // @ts-ignore
-                            // @ts-ignore
-                            return {
-                                role_id: role.role_id,// Handle case where role isn't found
-                                role_name: role.role_name
-                            };
-                        })
-                    )
-                    ,
-                    skins: (champ_info?.[champ.id]?.skins || []).map((skin: any) => ({
+                    image_url: `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/img/champion/${champ.image.full}`,
+                    roles,
+                    skins: (champInfo?.[champ.id]?.skins || []).map((skin: any) => ({
                         skin_id: skin.id,
                         name: skin.name,
                         number: skin.num,
                     }))
-
                 };
             })
         );
     }
 
-    public async seedDB() {
-        // @ts-ignore
-        for (const [index, role] of this.roles.entries()) {
-            await prisma.role.upsert({
-                where: {role_id: index + 1}, // Check if role already exists
-                update: {role_name: role}, // Update if exists
-                create: {
-                    role_name: role,
-                    role_id: index + 1
-                }
-            });
-        }
-
-        await this.fetchChampionsInfo();
-
-        for (const champ of this.champions_list) {
-
-            await prisma.champion.upsert({
-                where: {id: champ.id},
-                update: {},
-                create: {
-                    id: champ.id,
-                    champ_code:champ.champ_code,
-                    champ_name: champ.champ_name,
-                    image_url: champ.image_url,
-                    skins: {
-                        create: champ.skins.map(skin => ({
-                            id: skin.skin_id,
-                            skin_name: skin.name,
-                            skin_number: skin.number,
-                        }))
-                    },
-                    roles: {
-                        create: champ.roles.map(role => ({
-                            role: {
-                                connect: {
-                                    role_id: role.role_id
-                                }
-                            },
-                        })),
+    public async seedRoles() {
+        await Promise.all(
+            this.roles.map(async (role, index) => {
+                await prisma.role.upsert({
+                    where: { role_id: index + 1 },
+                    update: { role_name: role },
+                    create: {
+                        role_name: role,
+                        role_id: index + 1
                     }
+                });
+            })
+        );
+    }
 
-                }
-            });
+    public async seedChampions() {
+        await Promise.all(
+            this.champions_list.map(async (champ) => {
+                await prisma.champion.upsert({
+                    where: { id: champ.id },
+                    update: {
+                        image_url:champ.image_url,
+                        skins: {
+                            deleteMany: {},
+                            create: champ.skins.map(skin => ({
+                                id: skin.skin_id,
+                                skin_name: skin.name,
+                                skin_number: skin.number,
+                            })),
+                        },
+                    },
+                    create: {
+                        id: champ.id,
+                        champ_code: champ.champ_code,
+                        champ_name: champ.champ_name,
+                        image_url: champ.image_url,
+                        skins: {
+                            create: champ.skins.map(skin => ({
+                                id: skin.skin_id,
+                                skin_name: skin.name,
+                                skin_number: skin.number,
+                            }))
+                        },
+                        roles: {
+                            create: champ.roles.map(role => ({
+                                role: {
+                                    connect: {
+                                        role_id: role.role_id
+                                    }
+                                },
+                            })),
+                        }
+                    }
+                });
+            })
+        );
+    }
+    public async seedGameSettings(){
+        await prisma.gameSettings.upsert({
+            where:{settings_Id:"default"},
+            update:{patchVersion:this.apiVersion},
+            create:{
+                settings_Id:"default",
+                game_path:"",
+                patchVersion:this.apiVersion,
+            }
+        })
+    }
+    public async compareVersions(){
+        this.apiVersion = await this.getApiVersion();
+        const gameSettingsObj = await prisma.gameSettings.findFirst({
+            where:{settings_Id:"default"},
+        })
+        return gameSettingsObj != null ? gameSettingsObj.patchVersion == this.apiVersion : false;
+    }
+    public async seedDB() {
+        try {
+            await this.seedRoles();
+            await this.fetchChampionsInfo();
+            await this.seedChampions();
+            await this.seedGameSettings()
+            console.log("Database seeded successfully.");
+            eventemitter.emit("db_seeded");
+        } catch (error) {
+            console.error("Error seeding database:", error);
+            throw error;
         }
-        console.log("Database seeded successfully.");
     }
 }
 
+// Main execution
 (async () => {
-    const dbSeeder = new DatabaseSeeder();
-    await dbSeeder.seedDB();
+    try {
+        const dbSeeder = new DatabaseSeeder();
+        let matching = await dbSeeder.compareVersions()
+        if (!matching){
+            await dbSeeder.seedDB();
+        }
+    } catch (error) {
+        console.error("Application error:", error);
+        process.exit(1);
+    } finally {
+        await prisma.$disconnect();
+    }
 })();

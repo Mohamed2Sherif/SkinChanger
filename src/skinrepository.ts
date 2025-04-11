@@ -1,6 +1,6 @@
 import {PrismaClient} from "../prisma/src/generated/prisma/client"
 import path from "path";
-
+import EventEmitter from "events";
 function createPrismaClient() {
     return new PrismaClient();
 }
@@ -65,6 +65,7 @@ export async function get_champion_skins(champion_id: number) {
 }
 
 export async function updateGamePath(gamePath: string) {
+    const eventemitter = new EventEmitter();
     await prisma.gameSettings.upsert({
         where: {settings_Id: "default"},
         update: {game_path: gamePath},
@@ -73,6 +74,7 @@ export async function updateGamePath(gamePath: string) {
             game_path: gamePath
         }
     });
+    eventemitter.emit("gamepath_updated");
     return true
 }
 

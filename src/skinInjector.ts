@@ -8,27 +8,12 @@ import {GameSettings, PrismaClient} from "../prisma/src/generated/prisma/client"
 import https from 'https';
 const injectorPath = isDev ? path.join(process.cwd(), "./src/cslol-tools/mod-tools.exe") : path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'cslol-tools', "mod-tools.exe");
 
-const pathgetter = () => {
-    return async () => {
-        return await getGamePath();
-    };
-};
+const eventEmitter = new EventEmitter();
 
-// Usage:
-let gamePathobj:GameSettings; // Changed to let since we'll reassign it
 
-// Since pathgetter() returns a function, we need to call it:
-const getPathFn = pathgetter();
-let gamePath;
-
-getPathFn().then(path => {
-    gamePath = path.game_path;
-    console.log("Game path set to:", gamePathobj);
-});// Just use the path as a string
 const skinsPath = isDev ? path.join(process.cwd(), "./skinfiles/") : path.resolve(process.cwd(), "./skinfiles/")
 const config_file_path = isDev ? path.join(process.cwd(), "./src/config.ini") : path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'config.ini');
 // Function to run the command
-const eventEmitter = new EventEmitter();
 
 
 function runCommand(command, params) {
@@ -59,6 +44,8 @@ function runCommand(command, params) {
 
 // Wrap your sequential commands in an async function
 export async function injector_pipeline(champId_skin_names: Map<string, string>) {
+    let gamePath = await getGamePath().then(res=>res.game_path);
+    gamePath = gamePath.replace(/"/g, '');
     try {
         // Step 1: Display the help of mod-tools (optional)
 //         const helpOutput = await runCommand(injectorPath, ["--help"]);
