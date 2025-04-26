@@ -4,7 +4,7 @@ import ChampionSkins from "./champ_skins";
 import {useNavigate} from "react-router-dom";
 import {FiSettings, FiCopy, FiUsers, FiPlus, FiLogIn} from "react-icons/fi";
 import {Room, RoomEvent, RemoteParticipant } from "livekit-client";
-const LIVEKIT_SERVER = "exaltedksins-1kxixz05.livekit.cloud";
+const LIVEKIT_SERVER = window.champions.LiveKitUrl;
 
 const ChampionGrid = () => {
     // State management
@@ -39,7 +39,7 @@ const ChampionGrid = () => {
             setRoom(newRoom);
 
             await newRoom.connect(
-                `wss://${LIVEKIT_SERVER}`,
+                `${LIVEKIT_SERVER}`,
                 await generateTokenAsync(newRoomId, identity)
             );
 
@@ -71,7 +71,7 @@ const ChampionGrid = () => {
             setRoom(newRoom);
 
             await newRoom.connect(
-                `wss://${LIVEKIT_SERVER}`,
+                `${LIVEKIT_SERVER}`,
                 await generateTokenAsync(inputRoomId, identity)
             );
 

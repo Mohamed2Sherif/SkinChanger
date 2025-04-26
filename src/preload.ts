@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld('champions', {
     generate_token : (roomId :string,identity_Id:string) => ipcRenderer.invoke("generate_token", roomId, identity_Id),
     get_gamePath : ()=> ipcRenderer.invoke("get_gamePath"),
     get_participants : (roomId)=> ipcRenderer.invoke("get_participants",roomId),
+    LiveKitUrl: process.env.LIVEKIT_URL,
 });
