@@ -1,0 +1,769 @@
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Nunu.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Nunu.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Nunu.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Nunu.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Nunu.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/MasterYi.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/MasterYi.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Nunu.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/523/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/523/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Indexing game wads
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/166/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Indexing game wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/166/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Creating tmp directory
+[INF] Unzipping mod
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/166/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/166/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+backtrace: 
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_copy:
+    src = ./Installed/20.tmp
+    dst = ./Installed/20.tmp
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+  mod_import:
+    src = ./skinfiles/166/20.fantome
+    dst = ./Installed/20
+    game = D:/Games/LeagueofLegends/League of Legends" --noTFT
+error: Not a valid Game folder
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akshan.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Alistar.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Akshan.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Bard.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Bard.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Ahri.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Ahri.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akshan.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akshan.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Bard.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Bard.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Belveth.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Belveth.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Amumu.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Amumu.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Ezreal.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Ezreal.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Ezreal.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Caitlyn.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Caitlyn.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Ezreal.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Ezreal.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Caitlyn.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Galio.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Caitlyn.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Ezreal.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Galio.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Annie.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Annie.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Annie.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akshan.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akshan.wad.client
+[INF] Writing wad: DATA/FINAL/Champions/Annie.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Akali.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Akali.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Creating tmp directory
+[INF] Unzipping mod
+[INF] Optimizing after unzipping
+[INF] Creating tmp directory
+[INF] Indexing mod wads
+[INF] Indexing game wads
+[INF] Rebasing wads
+[INF] Resolving conflicts
+[INF] Copying META files
+[INF] Writing wads
+[INF] Writing wad: WAD/Annie.wad.client
+[INF] Removing original directory
+[INF] Moving tmp directory
+[INF] Remove existing mod
+[INF] Moving tmp directory
+[INF] Done!
+[INF] Indexing game
+[INF] Reading mods
+[INF] Merging mods
+[INF] Writing wads
+[INF] Writing wad: DATA/FINAL/Champions/Annie.wad.client
+[INF] Cleaning up stray wads
+[INF] Done!
+Status: Waiting for league match to start
