@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  livekit:
+    image: livekit/livekit-server
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./livekit.yaml:/livekit.yaml
+    command: --config /livekit.yaml
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./styles/index.css";
 import { handleSkinSelected } from "./cards";
 
-const ChampionSkins = ({ champId }) => {
+const ChampionSkins = ({ champId ,room}) => {
     const [skins, setSkins] = useState([]);
     const [selectedSkin, setSelectedSkin] = useState(null);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -28,7 +28,7 @@ const ChampionSkins = ({ champId }) => {
     const handleSkinClick = async (skin) => {
         setIsLoading(true);
         try {
-            await handleSkinSelected(skin, setShowSuccess, setShowError);
+            await handleSkinSelected(skin, setShowSuccess, setShowError,room);
         } catch (error) {
             console.error("Error applying skin:", error);
             setShowError(true);

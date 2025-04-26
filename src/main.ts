@@ -1,10 +1,13 @@
 import fs from "fs"
 import {injector_pipeline} from "./skinInjector";
 import "./skinDb";
-import {get_champion_roles_list, get_champion_skins, updateGamePath} from './skinrepository';
+import {get_champion_roles_list, get_champion_skins, getGamePath, updateGamePath} from './skinrepository';
 import {app, BrowserWindow, ipcMain} from 'electron';
-import path from 'path'; // Make sure you're importing path correctly;
-
+import path from 'path';
+import {generateToken, getParticipants} from "./partyMode"; // Make sure you're importing path correctly;
+import dotenv from "dotenv";
+const dotenvPath = path.join(process.resourcesPath, '.env');
+dotenv.config({path:dotenvPath})
 // Get the correct directory path
 function createWindow() {
     const win = new BrowserWindow({
@@ -41,7 +44,15 @@ app.whenReady().then(async () => {
     ipcMain.handle("update_game_path", async (_event, game_path: string) => {
         return await updateGamePath(game_path)
     })
-
+    ipcMain.handle("generate_token", async (_event, roomId:string,IdentityId:string) => {
+        return await generateToken(roomId,IdentityId)
+    })
+    ipcMain.handle("get_gamePath",async()=>{
+        return await getGamePath();
+    })
+    ipcMain.handle("get_participants",async(_event,roomId:string)=>{
+        return await getParticipants(roomId);
+    })
     createWindow()
 
 });
