@@ -23,7 +23,6 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         const s_value = `${skin.skin_number}`;
         // Get the map instance
         const map = await skinMapInstance.getSkinMap();
-        closeConnection = setupMessageHandler(room, skinMapInstance);
 
         map.set(key, s_value);
 
@@ -54,9 +53,6 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
     } catch (error) {
         console.error("Error in handleSkinSelected:", error);
         setShowError(true);
-        if (closeConnection) {
-            closeConnection();
-        }
     }
 }
 
