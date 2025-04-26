@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from "react";
-import {generateTokenAsync, populateCards} from "./cards";
+import {generateTokenAsync, handleSkinSelected, populateCards, setupMessageHandler, skinMapInstance} from "./cards";
 import ChampionSkins from "./champ_skins";
 import {useNavigate} from "react-router-dom";
 import {FiSettings, FiCopy, FiUsers, FiPlus, FiLogIn} from "react-icons/fi";
@@ -90,20 +90,31 @@ const ChampionGrid = () => {
 
     // Set up room event listeners
     const setupRoomListeners = (room,roomId) => {
-        window.champions.get_participants(roomId).then((particip) => {
-            setParticipants(particip);
-        })
+        let closeConnection;
+        try{
+            window.champions.get_participants(roomId).then((particip) => {
+                setParticipants(particip);
+            })
+            closeConnection= setupMessageHandler(room,skinMapInstance);
+            room
+                .on(RoomEvent.ParticipantConnected, (participant) => {
+                    setParticipants(prev => [...prev, participant]);
+                })
+                .on(RoomEvent.ParticipantDisconnected, (participant) => {
+                    setParticipants(prev => prev.filter(p => p !== participant));
+                })
+                .on(RoomEvent.Disconnected, () => {
+                    handleDisconnect();
+                });
+        }
+        catch (error){
+            if (closeConnection) {
+                closeConnection();
+            }
+            console.error("Error in setupRoomListeners:", error); // also good to log
 
-        room
-            .on(RoomEvent.ParticipantConnected, (participant) => {
-                setParticipants(prev => [...prev, participant]);
-            })
-            .on(RoomEvent.ParticipantDisconnected, (participant) => {
-                setParticipants(prev => prev.filter(p => p !== participant));
-            })
-            .on(RoomEvent.Disconnected, () => {
-                handleDisconnect();
-            });
+        }
+
     };
 
     // Clean up room resources
