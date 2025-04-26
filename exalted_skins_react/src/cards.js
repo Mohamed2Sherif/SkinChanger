@@ -1,29 +1,118 @@
+import {RoomEvent} from "livekit-client";
+
 export async function populateCards() {
-
-
-    return await window.champions.get_champions();// Get array from function
-
+    return await window.champions.get_champions();
 }
 
-export async function handleSkinSelected(skin, setShowSuccess, setShowError) {
-    // Construct key
-    const key = `${skin.champion.id}`;
-    const s_value = `${skin.skin_number}`;
-    // Create Map and set the entry
-    const skinMap = new Map();
-    skinMap.set(key, s_value);
-
-    // Optional: Convert to plain object if Electron can't handle Map directly
-
-    // Call Electron API
-    let response = await window.champions.select_skin(skinMap); // or window.electron.select_skin(key)
-    if (response == false) {
-        setShowError(true)
-    } else {
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
+class SkinMap {
+    constructor() {
+        this.skinMap = new Map();
     }
 
-    console.log("Skin selected and passed to Electron:", skinMap.entries());
+    async getSkinMap() {
+        return this.skinMap;
+    }
+}
 
+export const skinMapInstance = new SkinMap();
+
+export async function handleSkinSelected(skin, setShowSuccess, setShowError, room) {
+    let closeConnection;
+    try {
+        const key = `${skin.champion.id}`;
+        const s_value = `${skin.skin_number}`;
+        // Get the map instance
+        const map = await skinMapInstance.getSkinMap();
+        closeConnection = setupMessageHandler(room, skinMapInstance);
+
+        map.set(key, s_value);
+
+        console.log("thuis:",room)
+        // Send message to party
+        if (room) {
+            const success = await sendPartyMessage({
+                type: 'party-action',
+                champId: key,
+                skinId: s_value,
+            }, room);
+
+            if (!success) {
+                throw new Error("Failed to send party message");
+            }
+        }
+
+        // Call Electron API
+        const response = await window.champions.select_skin(map);
+        if (response == false) {
+            setShowError(true)
+        } else {
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000);
+        }
+
+        console.log("Skin selected and passed to Electron:", Array.from(map.entries()));
+    } catch (error) {
+        console.error("Error in handleSkinSelected:", error);
+        setShowError(true);
+        if (closeConnection) {
+            closeConnection();
+        }
+    }
+}
+
+export async function generateTokenAsync(roomId, identityId) {
+    return await window.champions.generate_token(roomId, identityId);
+}
+
+export async function sendPartyMessage(message, room) {
+    if (!room) {
+        console.error("Not connected to a room");
+        return false;
+    }
+    const encoder = new TextEncoder();
+    try {
+        let messageString = typeof message === 'string' ? message : JSON.stringify(message);
+        messageString = encoder.encode(messageString);
+        await room.localParticipant.publishData(
+            messageString,
+            { topic: 'party-chat' }
+        );
+        return true;
+    } catch (error) {
+        console.error("Failed to send message:", error);
+        return false;
+    }
+}
+
+export function setupMessageHandler(room, skinMapInstance) {
+    if (!room) return () => {};  // Return empty function if no room
+
+    const handler = (payload, participant, _, topic) => {
+        if (topic === 'party-chat') {
+            try {
+                const text = new TextDecoder().decode(payload); // <- decode Uint8Array to string
+                const message = JSON.parse(text);
+
+                console.log("Message from", participant.identity, ":", message);
+
+                if (message.type === 'party-action') {
+                    skinMapInstance.getSkinMap().then(async (map) => {
+                        if (!map.has(message.champId)) {
+                            map.set(message.champId, message.skinId);
+                        }
+                        await window.champions.select_skin(map);
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to parse message:", e);
+            }
+        }
+    };
+
+    room.on(RoomEvent.DataReceived, handler);
+
+    // Return cleanup function
+    return () => {
+        room.off(RoomEvent.DataReceived, handler);
+    };
 }
