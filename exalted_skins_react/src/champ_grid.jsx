@@ -1,11 +1,12 @@
-import React, {useEffect, useState, useMemo} from "react";
+import React, {useEffect, useState, useMemo, useRef} from "react";
 import {generateTokenAsync, handleSkinSelected, populateCards, setupMessageHandler, skinMapInstance} from "./cards";
 import ChampionSkins from "./champ_skins";
 import {useNavigate} from "react-router-dom";
-import {FiSettings, FiCopy, FiUsers, FiPlus, FiLogIn} from "react-icons/fi";
+import {FiSettings, FiCopy, FiUsers, FiPlus, FiLogIn, FiChevronDown, FiX} from "react-icons/fi";
 import {Room, RoomEvent, RemoteParticipant } from "livekit-client";
 const LIVEKIT_SERVER = window.champions.LiveKitUrl;
 import Settings from "./settings";
+
 const ChampionGrid = () => {
     // State management
     const [champions, setChampions] = useState([]);
@@ -20,8 +21,23 @@ const ChampionGrid = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showJoinModal, setShowJoinModal] = useState(false);
+    const [showPartyDropdown, setShowPartyDropdown] = useState(false);
     const navigate = useNavigate();
     const [showSettings, setShowSettings] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowPartyDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     // Initialize LiveKit room (host)
     const initLiveKitRoom = async () => {
@@ -46,6 +62,7 @@ const ChampionGrid = () => {
 
             setupRoomListeners(newRoom,newRoomId);
             setPartyMode(true);
+            setShowPartyDropdown(true); // Open dropdown after joining
         } catch (error) {
             console.error("Failed to connect to LiveKit:", error);
             setError("Failed to start party mode. Please try again.");
@@ -80,6 +97,7 @@ const ChampionGrid = () => {
             setupRoomListeners(newRoom,inputRoomId);
             setPartyMode(true);
             setShowJoinModal(false);
+            setShowPartyDropdown(true); // Open dropdown after joining
         } catch (error) {
             console.error("Failed to join LiveKit room:", error);
             setError("Failed to join party. Check the Room ID and try again.");
@@ -112,28 +130,29 @@ const ChampionGrid = () => {
             if (closeConnection) {
                 closeConnection();
             }
-            console.error("Error in setupRoomListeners:", error); // also good to log
-
+            console.error("Error in setupRoomListeners:", error);
         }
-
     };
 
     // Clean up room resources
-    const cleanupRoom = () => {
+    const cleanupRoom = async () => {
         if (room) {
-            room.disconnect();
+            await room.disconnect();
         }
         setRoom(null);
         setRoomId("");
         setParticipants([]);
         setIsHost(false);
         setPartyMode(false);
+        setShowPartyDropdown(false);
     };
 
     // Handle disconnection
     const handleDisconnect = () => {
         cleanupRoom();
         setError("Disconnected from the party");
+        setTimeout(() => setError(null), 3000);
+
     };
 
     // Generate random ID
@@ -141,10 +160,10 @@ const ChampionGrid = () => {
         return Math.random().toString(36).substring(2, 8);
     };
 
-    // Toggle party mode
-    const togglePartyMode = async () => {
+    // Toggle party mode dropdown
+    const togglePartyDropdown = async () => {
         if (partyMode) {
-            await cleanupRoom();
+            setShowPartyDropdown(prev => !prev);
         } else {
             setShowJoinModal(true);
         }
@@ -191,7 +210,6 @@ const ChampionGrid = () => {
         return <Settings onBack={() => setShowSettings(false)} />;
     }
 
-
     return (
         <div className="p-6 bg-[#15172b] min-h-screen">
             {/* Search Box and Action Buttons */}
@@ -205,9 +223,10 @@ const ChampionGrid = () => {
                         className="w-full p-3 rounded-lg bg-[#292b40] text-white placeholder-[#626890] focus:outline-none focus:ring-2 focus:ring-[#626890]"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative" ref={dropdownRef}>
+                    {/* Party Mode Button with Dropdown */}
                     <button
-                        onClick={togglePartyMode}
+                        onClick={togglePartyDropdown}
                         disabled={isLoading}
                         className={`p-3 rounded-lg flex items-center gap-2 ${
                             partyMode
@@ -223,11 +242,76 @@ const ChampionGrid = () => {
                                 <span className="bg-white text-green-600 text-xs px-2 py-1 rounded-full">
                                     {participants.length}
                                 </span>
+                                <FiChevronDown className={`transition-transform ${showPartyDropdown ? 'rotate-180' : ''}`} />
                             </>
                         ) : (
                             "Party Mode"
                         )}
                     </button>
+
+                    {/* Party Dropdown Menu */}
+                    {showPartyDropdown && partyMode && (
+                        <div className="absolute right-0 top-14 z-10 w-72 bg-[#292b40] rounded-lg shadow-lg border border-[#44485f]">
+                            <div className="p-4">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="font-bold text-lg flex items-center gap-2 text-white">
+                                        <FiUsers /> Party Info
+                                    </h3>
+                                    <button
+                                        onClick={() => setShowPartyDropdown(false)}
+                                        className="text-gray-400 hover:text-white"
+                                    >
+                                        <FiX size={18} />
+                                    </button>
+                                </div>
+
+                                <div className="mb-3">
+                                    <p className="text-sm text-gray-300 mb-1">Room ID:</p>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={roomId}
+                                            readOnly
+                                            className="flex-1 p-2 text-sm rounded bg-[#15172b] text-white"
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(roomId);
+                                            }}
+                                            className="p-2 bg-[#44485f] rounded hover:bg-[#626890] text-white"
+                                            title="Copy to clipboard"
+                                        >
+                                            <FiCopy size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <h4 className="font-semibold text-sm text-gray-300 mb-2">
+                                        Participants ({participants.length})
+                                    </h4>
+                                    <ul className="space-y-2 max-h-40 overflow-y-auto">
+                                        {participants.map((participant, index) => (
+                                            <li key={index} className="flex items-center gap-2 p-2 bg-[#15172b] rounded text-sm">
+                                                <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs">
+                                                    {participant.identity.charAt(0).toUpperCase()}
+                                                </div>
+                                                <span className="text-white">{participant.identity}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <button
+                                    onClick={cleanupRoom}
+                                    className="w-full p-2 bg-red-600 rounded hover:bg-red-700 text-white flex items-center justify-center gap-2"
+                                >
+                                    <FiX size={16} /> Leave Party
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     <button
                         onClick={() => setShowSettings(true)}
                         className="p-3 rounded-lg bg-[#292b40] text-white hover:bg-[#44485f] transition"
@@ -238,49 +322,14 @@ const ChampionGrid = () => {
                 </div>
             </div>
 
-            {/* Party Mode Information */}
-            {partyMode && (
-                <div className="mb-6 p-4 bg-[#292b40] rounded-lg text-white">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h3 className="font-bold text-lg flex items-center gap-2">
-                                <FiUsers/> {isHost ? "Hosting" : "Joined"} Party
-                            </h3>
-                            <p className="mt-1">Room ID: {roomId}</p>
-                        </div>
-                        <button
-                            onClick={() => navigator.clipboard.writeText(roomId)}
-                            className="flex items-center gap-1 px-3 py-2 bg-[#44485f] rounded hover:bg-[#626890]"
-                        >
-                            <FiCopy/> Copy
-                        </button>
-                    </div>
-
-                    {/* Participants List */}
-                    <div className="mt-4">
-                        <h4 className="font-semibold mb-2">Participants ({participants.length})</h4>
-                        <ul className="space-y-2">
-                            {participants.map((participant, index) => (
-                                <li key={index} className="flex items-center gap-2 p-2 bg-[#15172b] rounded">
-                                    <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                                        {participant.identity.charAt(0).toUpperCase()}
-                                    </div>
-                                    <span>{participant.identity}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            )}
-
             {/* Join Party Modal */}
             {showJoinModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-[#292b40] p-6 rounded-lg max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">Join Party Mode</h3>
+                        <h3 className="text-xl font-bold mb-4 text-white">Join Party Mode</h3>
 
                         <div className="mb-4">
-                            <label className="block mb-2">Enter Room ID</label>
+                            <label className="block mb-2 text-gray-300">Enter Room ID</label>
                             <input
                                 type="text"
                                 value={inputRoomId}
@@ -296,27 +345,31 @@ const ChampionGrid = () => {
                                     setInputRoomId("");
                                     setShowJoinModal(false);
                                 }}
-                                className="flex-1 p-3 bg-gray-600 rounded hover:bg-gray-700"
+                                className="flex-1 p-3 bg-gray-600 rounded hover:bg-gray-700 text-white"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={joinLiveKitRoom}
                                 disabled={!inputRoomId.trim() || isLoading}
-                                className="flex-1 p-3 bg-green-600 rounded hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 p-3 bg-green-600 rounded hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2 text-white"
                             >
-                                <FiLogIn/> Join
+                                {isLoading ? "Joining..." : (
+                                    <>
+                                        <FiLogIn/> Join
+                                    </>
+                                )}
                             </button>
                         </div>
 
                         <div className="mt-4 pt-4 border-t border-[#44485f]">
-                            <p className="text-center">Or</p>
+                            <p className="text-center text-gray-400">Or</p>
                             <button
                                 onClick={() => {
                                     setShowJoinModal(false);
                                     initLiveKitRoom();
                                 }}
-                                className="w-full mt-2 p-3 bg-blue-600 rounded hover:bg-blue-700 flex items-center justify-center gap-2"
+                                className="w-full mt-2 p-3 bg-blue-600 rounded hover:bg-blue-700 flex items-center justify-center gap-2 text-white"
                             >
                                 <FiPlus/> Create New Party
                             </button>
