@@ -3,13 +3,17 @@ version: '3.8'
 services:
   livekit:
     image: livekit/livekit-server
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - ./livekit.yaml:/livekit.yaml
+    ports:
+      - "7880:7880"    # HTTP port
+      - "7881:7881"    # TCP relay port
+      - "50000-50100:50000-50100/udp" # UDP media ports
+    configs:
+      - source: livekit_config
+        target: /livekit.yaml
     command: --config /livekit.yaml
     depends_on:
       - redis
+    restart: unless-stopped
 
   redis:
     image: redis:alpine
@@ -19,3 +23,6 @@ services:
 
 volumes:
   redis_data:
+configs:
+  livekit_config:
+    file: ./livekit.yaml
