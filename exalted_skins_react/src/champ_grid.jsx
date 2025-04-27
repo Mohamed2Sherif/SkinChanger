@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {FiSettings, FiCopy, FiUsers, FiPlus, FiLogIn} from "react-icons/fi";
 import {Room, RoomEvent, RemoteParticipant } from "livekit-client";
 const LIVEKIT_SERVER = window.champions.LiveKitUrl;
-
+import Settings from "./settings";
 const ChampionGrid = () => {
     // State management
     const [champions, setChampions] = useState([]);
@@ -21,6 +21,7 @@ const ChampionGrid = () => {
     const [error, setError] = useState(null);
     const [showJoinModal, setShowJoinModal] = useState(false);
     const navigate = useNavigate();
+    const [showSettings, setShowSettings] = useState(false);
 
     // Initialize LiveKit room (host)
     const initLiveKitRoom = async () => {
@@ -186,6 +187,10 @@ const ChampionGrid = () => {
             </div>
         );
     }
+    if (showSettings) {
+        return <Settings onBack={() => setShowSettings(false)} />;
+    }
+
 
     return (
         <div className="p-6 bg-[#15172b] min-h-screen">
@@ -224,11 +229,11 @@ const ChampionGrid = () => {
                         )}
                     </button>
                     <button
-                        onClick={() => navigate('/settings')}
+                        onClick={() => setShowSettings(true)}
                         className="p-3 rounded-lg bg-[#292b40] text-white hover:bg-[#44485f] transition"
                         aria-label="Settings"
                     >
-                        <FiSettings size={20}/>
+                        <FiSettings size={20} />
                     </button>
                 </div>
             </div>
