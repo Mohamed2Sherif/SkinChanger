@@ -39,7 +39,7 @@ const ChampionGrid = () => {
             setRoom(newRoom);
 
             await newRoom.connect(
-                `${LIVEKIT_SERVER}`,
+                LIVEKIT_SERVER,
                 await generateTokenAsync(newRoomId, identity)
             );
 
@@ -71,7 +71,7 @@ const ChampionGrid = () => {
             setRoom(newRoom);
 
             await newRoom.connect(
-                `${LIVEKIT_SERVER}`,
+                LIVEKIT_SERVER,
                 await generateTokenAsync(inputRoomId, identity)
             );
 
