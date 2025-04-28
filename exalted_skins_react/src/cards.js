@@ -25,7 +25,6 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
 
         map.set(key, s_value);
 
-        console.log("thuis:",room)
         // Send message to party
         if (room) {
             const success = await sendPartyMessage({
@@ -100,7 +99,6 @@ export function setupMessageHandler(room, skinMapInstance) {
                 const text = new TextDecoder().decode(payload); // <- decode Uint8Array to string
                 const message = JSON.parse(text);
 
-                console.log("Message from", participant.identity, ":", message);
 
                 if (message.type === 'party-action') {
                     skinMapInstance.getSkinMap().then(async (map) => {
