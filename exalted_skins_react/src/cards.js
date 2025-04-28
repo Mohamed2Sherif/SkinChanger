@@ -10,7 +10,6 @@ class SkinMap {
     }
 
     async getSkinMap() {
-        console.log(this.MainskinMap.size+1,this.MainskinMap)
         return this.MainskinMap;
     }
     async getPartySkinMap() {
