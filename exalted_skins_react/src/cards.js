@@ -5,12 +5,20 @@ export async function populateCards() {
 
 class SkinMap {
     constructor() {
-        this.skinMap = new Map();
+        this.MainskinMap = new Map();
+        this.PartySkinMap = new Map
     }
 
     async getSkinMap() {
-        return this.skinMap;
+        if(this.MainskinMap.size >4){
+            this.MainskinMap.clear();
+        }
+        return this.MainskinMap;
     }
+    async getPartySkinMap() {
+        return this.PartySkinMap
+    }
+
 }
 
 export const skinMapInstance = new SkinMap();
@@ -39,7 +47,9 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         }
 
         // Call Electron API
-        await window.champions.select_skin(true,map);
+        const partyMap = await skinMapInstance.getPartySkinMap()
+        const combinedskinMap = mergeMaps(map,partyMap);
+        await window.champions.select_skin(true,combinedskinMap);
         const handleSuccess = () => {
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 3000);
@@ -101,11 +111,11 @@ export function setupMessageHandler(room, skinMapInstance) {
 
 
                 if (message.type === 'party-action') {
-                    skinMapInstance.getSkinMap().then(async (map) => {
-                        if (!map.has(message.champId)) {
-                            map.set(message.champId, message.skinId);
-                        }
-                        await window.champions.select_skin(false,map);
+                    skinMapInstance.getPartySkinMap().then(async (Partymap) => {
+                        Partymap.set(message.champId,message.skinId)
+                        const mainMap = await skinMapInstance.getSkinMap()
+                        const combinedSkinMap = mergeMaps(mainMap,Partymap)
+                        await window.champions.select_skin(false,combinedSkinMap);
                     });
                 }
             } catch (e) {
@@ -120,4 +130,10 @@ export function setupMessageHandler(room, skinMapInstance) {
     return () => {
         room.off(RoomEvent.DataReceived, handler);
     };
+}
+function mergeMaps(primary, secondary) {
+    return new Map([
+        ...secondary, // Lower priority (overwritten by primary)
+        ...primary    // Higher priority
+    ]);
 }
