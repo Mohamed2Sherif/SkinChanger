@@ -1,6 +1,6 @@
 {
   "name": "ExaltedSkins",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "",
   "type": "commonjs",
   "main": "build/main.js",
@@ -29,7 +29,6 @@
     "typescript": "^5.8.2"
   },
   "build": {
-    "version": "2.0.1",
     "extraResources": [
       {
         "from": "./.env",

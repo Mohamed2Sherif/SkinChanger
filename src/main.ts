@@ -16,7 +16,7 @@ function createWindow() {
         height: 600,
         webPreferences: {
             // sandbox:false,
-            nodeIntegration: true, // Enable Node.js integration in the renderer process
+            nodeIntegration: false, // Enable Node.js integration in the renderer process
             contextIsolation: true, // Disable context isolation (for simplicity)
             preload: path.join(__dirname, 'preload.js'), // Ensure this points to the correct preload script
         },
