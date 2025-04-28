@@ -4,7 +4,6 @@ import EventEmitter from "events";
 import fs from 'fs';
 import {getGamePath} from "./skinrepository";
 const isDev = process.env.NODE_ENV === 'development'
-import {GameSettings, PrismaClient} from "../prisma/src/generated/prisma/client"
 import https from 'https';
 const injectorPath = isDev ? path.join(process.cwd(), "./src/cslol-tools/mod-tools.exe") : path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'cslol-tools', "mod-tools.exe");
 
