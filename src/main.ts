@@ -6,6 +6,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'path';
 import {generateToken, getParticipants} from "./partyMode"; // Make sure you're importing path correctly;
 import dotenv from "dotenv";
+import {queueService ,emitter} from "./queueService";
 const dotenvPath = path.join(process.resourcesPath, '.env');
 dotenv.config({path:dotenvPath})
 // Get the correct directory path
@@ -29,7 +30,12 @@ function createWindow() {
             ? `http://localhost:3001/`  // In dev mode, use the file URL directly
             : `${path.join(__dirname, 'index.html')}`;  //
     win.loadURL(startURL);
-
+    emitter.on("skin_injection_success",()=>{
+        win.webContents.send("skin_injection_success")
+    });
+    emitter.on("skin_injection_failed",()=>{
+        win.webContents.send("skin_injection_failed");
+    })
 }
 
 app.whenReady().then(async () => {
@@ -38,8 +44,8 @@ app.whenReady().then(async () => {
 
         return await get_champion_skins(champ_id);
     });
-    ipcMain.handle("select_skin", async (_event, chamapId_Skin_Name_Map: Map<string, string>) => {
-        return await injector_pipeline(chamapId_Skin_Name_Map)
+    ipcMain.handle("select_skin", async (_event, isprimary:boolean,chamapId_Skin_Name_Map: Map<string, string>) => {
+        return await queueService.addToQueue(chamapId_Skin_Name_Map,isprimary)
     })
     ipcMain.handle("update_game_path", async (_event, game_path: string) => {
         return await updateGamePath(game_path)

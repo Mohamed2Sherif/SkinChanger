@@ -152,7 +152,6 @@ const ChampionGrid = () => {
         cleanupRoom();
         setError("Disconnected from the party");
         setTimeout(() => setError(null), 3000);
-
     };
 
     // Generate random ID

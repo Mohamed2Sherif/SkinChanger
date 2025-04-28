@@ -56,7 +56,6 @@ export async function injector_pipeline(champId_skin_names: Map<string, string>)
             // You can add any custom handling here, like notifying the user, logging, etc.
         });
         // Step 2: Import  skins
-        console.log(champId_skin_names.entries())
         for (const [champId, skin_name] of champId_skin_names.entries()) {
             const cleanedSkinName = skin_name.replace("/", "");
             const skinPath = path.join(skinsPath, champId, cleanedSkinName);
@@ -90,6 +89,7 @@ export async function injector_pipeline(champId_skin_names: Map<string, string>)
             `${config_file_path}`,
             `--game:"${gamePath}"` // Wrap the game path in quotes
         ]);
+        return true
     } catch (error) {
         return false
         console.error("Error:", error);

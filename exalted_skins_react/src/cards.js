@@ -1,5 +1,4 @@
 import {RoomEvent} from "livekit-client";
-
 export async function populateCards() {
     return await window.champions.get_champions();
 }
@@ -41,18 +40,30 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         }
 
         // Call Electron API
-        const response = await window.champions.select_skin(map);
-        if (response == false) {
-            setShowError(true)
-        } else {
+        await window.champions.select_skin(true,map);
+        const handleSuccess = () => {
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 3000);
-        }
+        };
 
-        console.log("Skin selected and passed to Electron:", Array.from(map.entries()));
+        const handleFailure = () => {
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
+        };
+
+        // Setup listeners
+        const cleanupSuccess = window.electronAPI.onSkinInjectionSuccess(handleSuccess);
+        const cleanupFailure = window.electronAPI.onSkinInjectionFailed(handleFailure);
+
+        return () => {
+            cleanupSuccess();
+            cleanupFailure();
+        };
     } catch (error) {
         console.error("Error in handleSkinSelected:", error);
         setShowError(true);
+        cleanupSuccess();
+        cleanupFailure();
     }
 }
 
@@ -96,7 +107,7 @@ export function setupMessageHandler(room, skinMapInstance) {
                         if (!map.has(message.champId)) {
                             map.set(message.champId, message.skinId);
                         }
-                        await window.champions.select_skin(map);
+                        await window.champions.select_skin(false,map);
                     });
                 }
             } catch (e) {
