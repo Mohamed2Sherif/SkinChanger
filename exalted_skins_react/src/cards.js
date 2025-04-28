@@ -29,7 +29,7 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         // Get the map instance
         const map = await skinMapInstance.getSkinMap();
         if (map.size >4){
-            map.clear()
+            deleteFirstFromMap(map);
         }
         map.set(key, s_value);
 
@@ -136,4 +136,12 @@ function mergeMaps(primary, secondary) {
         ...secondary, // Lower priority (overwritten by primary)
         ...primary    // Higher priority
     ]);
+}
+
+function deleteFirstFromMap(map) {
+    // Get the first entry (Map preserves insertion order)
+    const firstKey = map.keys().next().value;
+    if (firstKey !== undefined) {
+        map.delete(firstKey); // Remove the oldest item
+    }
 }
