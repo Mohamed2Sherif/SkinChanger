@@ -10,13 +10,12 @@ class SkinMap {
     }
 
     async getSkinMap() {
-        if(this.MainskinMap.size >4){
-            this.MainskinMap.clear();
-        }
+        console.log(this.MainskinMap.size+1,this.MainskinMap)
         return this.MainskinMap;
     }
     async getPartySkinMap() {
         return this.PartySkinMap
+
     }
 
 }
@@ -30,7 +29,9 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         const s_value = `${skin.skin_number}`;
         // Get the map instance
         const map = await skinMapInstance.getSkinMap();
-
+        if (map.size >4){
+            map.clear()
+        }
         map.set(key, s_value);
 
         // Send message to party
