@@ -46,6 +46,7 @@ app.whenReady().then(async () => {
     });
     ipcMain.handle("select_skin", async (_event, isprimary:boolean,chamapId_Skin_Name_Map: Map<string, string>) => {
         return await queueService.addToQueue(chamapId_Skin_Name_Map,isprimary)
+
     })
     ipcMain.handle("update_game_path", async (_event, game_path: string) => {
         return await updateGamePath(game_path)

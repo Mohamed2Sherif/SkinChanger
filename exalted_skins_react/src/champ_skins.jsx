@@ -27,13 +27,19 @@ const ChampionSkins = ({ champId ,room}) => {
 
     const handleSkinClick = async (skin) => {
         setIsLoading(true);
+
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
         try {
-            await handleSkinSelected(skin, setShowSuccess, setShowError,room);
+            await Promise.all([
+                handleSkinSelected(skin, setShowSuccess, setShowError, room),
+                delay(2800) // Ensure minimum 2.3-second wait
+            ]);
         } catch (error) {
             console.error("Error applying skin:", error);
             setShowError(true);
         } finally {
-            setIsLoading(false); // Hide loader when done
+            setIsLoading(false);
         }
     };
 
