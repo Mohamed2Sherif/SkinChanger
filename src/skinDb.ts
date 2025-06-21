@@ -2,6 +2,7 @@ import { PrismaClient } from '../prisma/src/generated/prisma/client';
 import axios from "axios";
 import path from "path";
 import EventEmitter from "events";
+import fs from "fs";
 
 // Initialize EventEmitter
 const eventemitter = new EventEmitter();
@@ -158,12 +159,31 @@ class DatabaseSeeder {
         );
     }
     public async seedGameSettings(){
+        let client_installs_path = "\"C:\\ProgramData\\Riot Games\\RiotClientInstalls.json\""
+        let league_path = "";
+        fs.readFile(client_installs_path, "utf8", (err, data) => {
+            try {
+                const json = JSON.parse(data);
+
+                const associatedClients = json.associated_client;
+                let leaguePath = null;
+
+                for (const gamePath in associatedClients) {
+                    if (gamePath.toLowerCase().includes('league of legends')) {
+                        leaguePath = gamePath;
+                        break;
+                    }
+                }
+        }
+        catch(err) {
+            console.error(err);}
+        })
         await prisma.gameSettings.upsert({
             where:{settings_Id:"default"},
             update:{patchVersion:this.apiVersion},
             create:{
                 settings_Id:"default",
-                game_path:"",
+                game_path:league_path,
                 patchVersion:this.apiVersion,
             }
         })

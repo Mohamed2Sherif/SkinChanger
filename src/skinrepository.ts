@@ -1,6 +1,7 @@
 import {PrismaClient} from "../prisma/src/generated/prisma/client"
 import path from "path";
 import EventEmitter from "events";
+
 function createPrismaClient() {
     return new PrismaClient();
 }
@@ -80,4 +81,30 @@ export async function updateGamePath(gamePath: string) {
 
 export async function getGamePath() {
     return await prisma.gameSettings.findFirst({where: {settings_Id: "default"}});
+}
+
+export async function getChampSkinNames(champ_id, skin_number) {
+    champ_id = parseInt(champ_id);
+    skin_number = parseInt(skin_number);
+    try {
+        let champ = await prisma.champion.findFirst({
+            where: { id: champ_id }
+        });
+
+        if (!champ) return null;
+
+        let skin = await prisma.skin.findFirst({
+            where: {
+                champ_id: champ_id,
+                skin_number: skin_number
+            }
+        });
+
+        if (!skin) return null;
+
+        return [champ.champ_name,skin.skin_name];
+    } catch (error) {
+        console.error("Error in getChampSkin:", error);
+        return null;
+    }
 }
