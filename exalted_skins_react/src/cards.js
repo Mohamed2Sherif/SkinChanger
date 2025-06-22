@@ -28,7 +28,7 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
         const s_value = `${skin.skin_number}`;
         // Get the map instance
         const map = await skinMapInstance.getSkinMap();
-        if (map.size >4){
+        if (map.size >2){
             deleteFirstFromMap(map);
         }
         map.set(key, s_value);
