@@ -1,15 +1,23 @@
 import fs from "fs"
-import {injector_pipeline} from "./skinInjector";
 import "./skinDb";
 import {get_champion_roles_list, get_champion_skins, getGamePath, updateGamePath} from './skinrepository';
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'path';
+import {autoUpdater} from "electron-updater";
 import {generateToken, getParticipants} from "./partyMode"; // Make sure you're importing path correctly;
 import dotenv from "dotenv";
 import {queueService ,emitter} from "./queueService";
 const dotenvPath = path.join(process.resourcesPath, '.env');
 dotenv.config({path:dotenvPath})
-// Get the correct directory path
+autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: 'Mohamed2Sherif',
+    repo: 'SkinChanger',
+    private: true,
+    token: process.env.GH_TOKEN
+});
+autoUpdater.autoDownload=true
+autoUpdater.autoInstallOnAppQuit = true
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
@@ -61,9 +69,8 @@ app.whenReady().then(async () => {
         return await getParticipants(roomId);
     })
     createWindow()
-
+    autoUpdater.checkForUpdates()
 });
-
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();

@@ -1,19 +1,23 @@
 {
   "name": "ExaltedSkins",
-  "version": "2.0.1",
+  "version": "2.3.5",
   "description": "",
+  "author": "Master Shifo",
   "type": "commonjs",
   "main": "build/main.js",
   "scripts": {
     "dev": "electron src/",
     "start": "npm run compile && electron build/main.js",
-    "compile": "tsc",
-    "dist": " tsc && cd exalted_skins_react && npm run build && cd .. && electron-builder "
+    "compile": " tsc && cd exalted_skins_react && npm run build && cd ..",
+    "dist": " tsc && cd exalted_skins_react && npm run build && cd .. && electron-builder ",
+    "build": "electron-builder build --publish never",
+    "release": "electron-builder build --publish always"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
+    "electron-updater": "^6.6.2",
     "livekit-client": "^2.11.3",
     "livekit-server-sdk": "^2.12.0",
     "simple-peer": "^9.11.1",
@@ -22,13 +26,20 @@
   "devDependencies": {
     "@types/node": "^22.13.14",
     "copyfiles": "^2.4.1",
-    "electron": "^35.1.4",
+    "electron": "^35.5.1",
     "electron-builder": "^26.0.12",
     "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Mohamed2Sherif",
+        "repo": "SkinChanger"
+      }
+    ],
     "extraResources": [
       {
         "from": "./.env",
@@ -42,6 +53,18 @@
       "src/cslol-tools/**/*",
       "src/config.ini"
     ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true
+    },
     "files": [
       "build/**/*",
       "prisma/**/*",
@@ -54,10 +77,5 @@
     },
     "asar": true
   },
-  "win": {
-    "icon": "icon.ico",
-    "target": "nsis"
-  },
-  "nsis": {},
   "private": true
 }
