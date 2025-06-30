@@ -23,3 +23,4 @@ livekit.yaml
 
 # Prisma generated output but keep schema
 /prisma/src/
+db/
