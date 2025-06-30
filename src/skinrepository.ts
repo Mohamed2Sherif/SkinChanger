@@ -60,6 +60,12 @@ export async function get_champion_skins(champion_id: number) {
                         champ_name: true
                         , champ_code: true
                     }
+            },
+            Chromas :{
+                select:{
+                    chroma_id: true,
+                    color:true
+                }
             }
         }
     })

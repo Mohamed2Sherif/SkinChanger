@@ -43,6 +43,7 @@ interface ChampionRole {
 interface Chroma {
     id: string;
     name: string;
+    color: string;
     // Add other chroma properties as needed
 }
 
@@ -63,6 +64,7 @@ const formatSkins = (skins: Skin[], champId: number) =>
         Chromas: {
             create: skin.memory_chromas?.map((chroma) => ({
                 chroma_id: chroma.id
+                , color: chroma.color
             })) || []
         }
     }));
@@ -81,6 +83,7 @@ class DatabaseSeeder {
         return axios.get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`)
             .then(response => response.data.data);
     }
+
     private async fetchChromas(champKey: string, skinNum: number, retries = 3): Promise<Chroma[]> {
         const url = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/${champKey}.json`;
 
@@ -110,7 +113,8 @@ class DatabaseSeeder {
 
                 return skin?.chromas?.map((chroma: any) => ({
                     id: chroma.id.toString(),
-                    name: chroma.name
+                    name: chroma.name,
+                    color: chroma.colors[0]
                 })) || [];
 
             } catch (error) {
@@ -126,6 +130,7 @@ class DatabaseSeeder {
         }
         return [];
     }
+
     private async hasChromas(champKey: string, skinNum: number): Promise<boolean> {
         try {
             const chromas = await this.fetchChromas(champKey, skinNum);
@@ -135,6 +140,7 @@ class DatabaseSeeder {
             return false;
         }
     }
+
     public async fetchChampionsInfo(): Promise<void> {
         this.apiVersion = await this.getApiVersion();
         const championsEndpoint = `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion.json`;
@@ -150,7 +156,7 @@ class DatabaseSeeder {
                 const roles = await Promise.all(
                     tags.map(async (tag: string) => {
                         const role = await prisma.role.findFirst({
-                            where: { role_name: tag }
+                            where: {role_name: tag}
                         });
                         return {
                             role_id: role?.role_id || 0,
@@ -181,6 +187,7 @@ class DatabaseSeeder {
             })
         );
     }
+
     public async seedRoles() {
         await Promise.all(
             this.roles.map(async (role, index) => {

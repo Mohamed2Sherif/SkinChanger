@@ -52,6 +52,7 @@ model Skin {
 }
 model Chromas{
     chroma_id String @id @unique
+    color String
     skin_id String
     Skin  Skin @relation(fields: [skin_id],references: [id],onDelete: Cascade)
 }
