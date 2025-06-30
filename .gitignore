@@ -1,23 +1,22 @@
-/tmp
-/out-tsc
-/node_modules
-/src/cslol-tools/dst
-/src/cslol-tools/Installed
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build
+dist/
+out-tsc/
+build/
+
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/.pnp
-.pnp.js
+
+# local env
 .env
-.vscode/*
-/lol-skins/
-/lol-skins/
-/Installed/
-/dst/
-/skinfiles
-prisma/src/generated/
-/dist/
-build/
-log.txt
-livekit.yaml
-prisma
+.vscode/
+
+# Prisma generated output but keep schema
+prisma/generated/
+!prisma/schema.prisma
