@@ -7,16 +7,19 @@ node_modules/
 dist/
 out-tsc/
 build/
-
+.idea/
 # logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
+skinfiles/
+dst/
+Installed/
 # local env
 .env
 .vscode/
+log.txt
+livekit.yaml
 
 # Prisma generated output but keep schema
-prisma/generated/
-!prisma/schema.prisma
+/prisma/src/
