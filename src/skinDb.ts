@@ -40,12 +40,32 @@ interface ChampionRole {
     role_name: string;
 }
 
+interface Chroma {
+    id: string;
+    name: string;
+    // Add other chroma properties as needed
+}
+
 interface Skin {
     skin_id: string;
     name: string;
     number: number;
-    chromas: boolean;
+    memory_haschromas: boolean;
+    memory_chromas: Chroma[];
 }
+
+const formatSkins = (skins: Skin[], champId: number) =>
+    skins.map((skin) => ({
+        id: skin.skin_id,
+        skin_name: skin.name,
+        skin_number: skin.number,
+        hasChromas: skin.memory_haschromas,
+        Chromas: {
+            create: skin.memory_chromas?.map((chroma) => ({
+                chroma_id: chroma.id
+            })) || []
+        }
+    }));
 
 class DatabaseSeeder {
     private champions_list: Champion[] = [];
@@ -61,7 +81,60 @@ class DatabaseSeeder {
         return axios.get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`)
             .then(response => response.data.data);
     }
+    private async fetchChromas(champKey: string, skinNum: number, retries = 3): Promise<Chroma[]> {
+        const url = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/${champKey}.json`;
 
+        for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 15000);
+
+                const response = await fetch(url, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                        'Accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.9'
+                    },
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeout);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const skinId = `${champKey}${skinNum.toString().padStart(3, '0')}`;
+                const skin = data.skins?.find((s: any) => s.id.toString() === skinId);
+
+                return skin?.chromas?.map((chroma: any) => ({
+                    id: chroma.id.toString(),
+                    name: chroma.name
+                })) || [];
+
+            } catch (error) {
+                if (attempt === retries) {
+                    console.error(`Final attempt failed for champ ${champKey} skin ${skinNum}:`, error);
+                    return [];
+                }
+
+                // Exponential backoff
+                const delay = Math.pow(2, attempt) * 500;
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+        return [];
+    }
+    private async hasChromas(champKey: string, skinNum: number): Promise<boolean> {
+        try {
+            const chromas = await this.fetchChromas(champKey, skinNum);
+            return chromas.length > 0;
+        } catch (error) {
+            console.error(`Non-retryable error for champ ${champKey} skin ${skinNum}:`, error);
+            return false;
+        }
+    }
     public async fetchChampionsInfo(): Promise<void> {
         this.apiVersion = await this.getApiVersion();
         const championsEndpoint = `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion.json`;
@@ -77,7 +150,7 @@ class DatabaseSeeder {
                 const roles = await Promise.all(
                     tags.map(async (tag: string) => {
                         const role = await prisma.role.findFirst({
-                            where: {role_name: tag}
+                            where: { role_name: tag }
                         });
                         return {
                             role_id: role?.role_id || 0,
@@ -86,23 +159,28 @@ class DatabaseSeeder {
                     })
                 ).then(results => results.filter(r => r.role_id !== 0));
 
+                // Process skins with proper async/await
+                const skins = await Promise.all(
+                    (champInfo?.[champ.id]?.skins || []).map(async (skin: any) => ({
+                        skin_id: skin.id.toString(),
+                        name: skin.name,
+                        number: skin.num,
+                        memory_haschromas: await this.hasChromas(champ.key, skin.num),
+                        memory_chromas: await this.fetchChromas(champ.key, skin.num)
+                    }))
+                );
+
                 return {
                     id: parseInt(champ.key),
                     champ_code: champ.id,
                     champ_name: champ.name,
                     image_url: `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/img/champion/${champ.image.full}`,
                     roles,
-                    skins: (champInfo?.[champ.id]?.skins || []).map((skin: any) => ({
-                        skin_id: skin.id,
-                        name: skin.name,
-                        number: skin.num,
-                        chromas: skin.chromas
-                    }))
+                    skins
                 };
             })
         );
     }
-
     public async seedRoles() {
         await Promise.all(
             this.roles.map(async (role, index) => {
@@ -127,12 +205,7 @@ class DatabaseSeeder {
                         image_url: champ.image_url,
                         skins: {
                             deleteMany: {},
-                            create: champ.skins.map(skin => ({
-                                id: skin.skin_id,
-                                skin_name: skin.name,
-                                skin_number: skin.number,
-                                hasChromas: skin.chromas
-                            })),
+                            create: formatSkins(champ.skins, champ.id),
                         },
                     },
                     create: {
@@ -141,12 +214,7 @@ class DatabaseSeeder {
                         champ_name: champ.champ_name,
                         image_url: champ.image_url,
                         skins: {
-                            create: champ.skins.map(skin => ({
-                                id: skin.skin_id,
-                                skin_name: skin.name,
-                                skin_number: skin.number,
-                                hasChromas: skin.chromas
-                            }))
+                            create: formatSkins(champ.skins, champ.id)
                         },
                         roles: {
                             create: champ.roles.map(role => ({
@@ -179,7 +247,7 @@ class DatabaseSeeder {
                 }
             }
             await prisma.gameSettings.upsert({
-                where: { settings_Id: "default" },
+                where: {settings_Id: "default"},
                 update: {
                     patchVersion: this.apiVersion,
                     game_path: league_path,
