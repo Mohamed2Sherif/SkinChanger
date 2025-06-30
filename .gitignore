@@ -15,7 +15,9 @@ yarn-error.log*
 /Installed/
 /dst/
 /skinfiles
-/build/
+prisma/src/generated/
 /dist/
+build/
 log.txt
 livekit.yaml
+prisma

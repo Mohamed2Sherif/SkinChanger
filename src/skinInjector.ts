@@ -190,7 +190,7 @@ async function fetchAndSaveSkinFile(champNum: string, skin_number: string) {
   let rawUrl = await get_repo_skin_url_if_exist(champNum, skin_number);
   const exists = await checkIfRepoFileExists(rawUrl);
   if (!exists) {
-    const rawUrl = `http://56.228.82.100:8000/skin/${champNum}/${skin_number}`;
+    const rawUrl = `${process.env.BACKEND_SERVER_URL}/skin/${champNum}/${skin_number}`;
     const outputDir = path.resolve(process.cwd(), `./skinfiles/${champNum}`);
     const outputPath = path.join(outputDir, `${skin_number}.wad.client`);
     if (!fs.existsSync(outputDir)) {

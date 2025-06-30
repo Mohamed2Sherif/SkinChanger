@@ -1,8 +1,8 @@
-import { PrismaClient } from '../prisma/src/generated/prisma/client';
+import {PrismaClient} from '../prisma/src/generated/prisma/client';
 import axios from "axios";
 import path from "path";
 import EventEmitter from "events";
-import fs from "fs";
+import fs from 'fs/promises'; // use the promise-based fs
 
 // Initialize EventEmitter
 const eventemitter = new EventEmitter();
@@ -44,6 +44,7 @@ interface Skin {
     skin_id: string;
     name: string;
     number: number;
+    chromas: boolean;
 }
 
 class DatabaseSeeder {
@@ -76,7 +77,7 @@ class DatabaseSeeder {
                 const roles = await Promise.all(
                     tags.map(async (tag: string) => {
                         const role = await prisma.role.findFirst({
-                            where: { role_name: tag }
+                            where: {role_name: tag}
                         });
                         return {
                             role_id: role?.role_id || 0,
@@ -95,6 +96,7 @@ class DatabaseSeeder {
                         skin_id: skin.id,
                         name: skin.name,
                         number: skin.num,
+                        chromas: skin.chromas
                     }))
                 };
             })
@@ -105,8 +107,8 @@ class DatabaseSeeder {
         await Promise.all(
             this.roles.map(async (role, index) => {
                 await prisma.role.upsert({
-                    where: { role_id: index + 1 },
-                    update: { role_name: role },
+                    where: {role_id: index + 1},
+                    update: {role_name: role},
                     create: {
                         role_name: role,
                         role_id: index + 1
@@ -120,15 +122,16 @@ class DatabaseSeeder {
         await Promise.all(
             this.champions_list.map(async (champ) => {
                 await prisma.champion.upsert({
-                    where: { id: champ.id },
+                    where: {id: champ.id},
                     update: {
-                        image_url:champ.image_url,
+                        image_url: champ.image_url,
                         skins: {
                             deleteMany: {},
                             create: champ.skins.map(skin => ({
                                 id: skin.skin_id,
                                 skin_name: skin.name,
                                 skin_number: skin.number,
+                                hasChromas: skin.chromas
                             })),
                         },
                     },
@@ -142,6 +145,7 @@ class DatabaseSeeder {
                                 id: skin.skin_id,
                                 skin_name: skin.name,
                                 skin_number: skin.number,
+                                hasChromas: skin.chromas
                             }))
                         },
                         roles: {
@@ -158,43 +162,48 @@ class DatabaseSeeder {
             })
         );
     }
-    public async seedGameSettings(){
-        let client_installs_path = "\"C:\\ProgramData\\Riot Games\\RiotClientInstalls.json\""
+
+
+    public async seedGameSettings() {
+        let client_installs_path = "C:/ProgramData/Riot Games/RiotClientInstalls.json";
         let league_path = "";
-        fs.readFile(client_installs_path, "utf8", (err, data) => {
-            try {
-                const json = JSON.parse(data);
+        try {
+            const data = await fs.readFile(client_installs_path, "utf8");
+            const json = JSON.parse(data);
+            const associatedClients = json.associated_client;
 
-                const associatedClients = json.associated_client;
-                let leaguePath = null;
-
-                for (const gamePath in associatedClients) {
-                    if (gamePath.toLowerCase().includes('league of legends')) {
-                        leaguePath = gamePath;
-                        break;
-                    }
+            for (const gamePath in associatedClients) {
+                if (gamePath.toLowerCase().includes("league of legends")) {
+                    league_path = gamePath;
+                    break;
                 }
-        }
-        catch(err) {
-            console.error(err);}
-        })
-        await prisma.gameSettings.upsert({
-            where:{settings_Id:"default"},
-            update:{patchVersion:this.apiVersion},
-            create:{
-                settings_Id:"default",
-                game_path:league_path,
-                patchVersion:this.apiVersion,
             }
-        })
+            await prisma.gameSettings.upsert({
+                where: { settings_Id: "default" },
+                update: {
+                    patchVersion: this.apiVersion,
+                    game_path: league_path,
+                },
+                create: {
+                    settings_Id: "default",
+                    game_path: league_path,
+                    patchVersion: this.apiVersion,
+                }
+            });
+        } catch (err) {
+            console.error("Error seeding game settings:", err);
+        }
     }
-    public async compareVersions(){
+
+
+    public async compareVersions() {
         this.apiVersion = await this.getApiVersion();
         const gameSettingsObj = await prisma.gameSettings.findFirst({
-            where:{settings_Id:"default"},
+            where: {settings_Id: "default"},
         })
         return gameSettingsObj != null ? gameSettingsObj.patchVersion == this.apiVersion : false;
     }
+
     public async seedDB() {
         try {
             await this.seedRoles();
@@ -215,7 +224,7 @@ class DatabaseSeeder {
     try {
         const dbSeeder = new DatabaseSeeder();
         let matching = await dbSeeder.compareVersions()
-        if (!matching){
+        if (!matching) {
             await dbSeeder.seedDB();
         }
     } catch (error) {

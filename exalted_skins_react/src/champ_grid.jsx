@@ -196,12 +196,16 @@ const ChampionGrid = () => {
         return (
             <div className="p-6 bg-[#15172b]">
                 <button
-                    onClick={() => setSelectedChampion(null)}
+                    onClick={() => {
+                        setSelectedChampion(null)
+                        setSearchTerm("")
+                    }}
                     className="text-white p-2 bg-[#292b40] rounded mb-4 hover:bg-[#44485f]"
                 >
                     ← Back to Champions
                 </button>
                 <ChampionSkins champId={selectedChampion} room={room}/>
+
             </div>
         );
     }

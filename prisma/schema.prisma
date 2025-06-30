@@ -43,12 +43,19 @@ model Skin {
   id              String         @id @unique
   skin_name       String
   champ_id        Int
+  hasChromas     Boolean
   skin_number     Int
   local_skin_path String?
   champion        Champion       @relation(fields: [champ_id], references: [id], onDelete: NoAction)
   FavouriteSkin   FavouriteSkin?
 }
-
+model Chromas{
+    skin_id String
+    champ_id String @unique
+    chroma_id String @id @unique
+}
+// https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-chroma-images/{championKye}/{ChromaId}.png
+// https:// raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/{ChampionKey}.json
 model FavouriteSkin {
   skin_id String @id @unique
   skin    Skin   @relation(fields: [skin_id], references: [id], onDelete: NoAction)
