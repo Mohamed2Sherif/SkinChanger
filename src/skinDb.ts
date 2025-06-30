@@ -250,6 +250,7 @@ class DatabaseSeeder {
             for (const gamePath in associatedClients) {
                 if (gamePath.toLowerCase().includes("league of legends")) {
                     league_path = gamePath;
+                    league_path+="Game";
                     break;
                 }
             }
@@ -257,7 +258,6 @@ class DatabaseSeeder {
                 where: {settings_Id: "default"},
                 update: {
                     patchVersion: this.apiVersion,
-                    game_path: league_path,
                 },
                 create: {
                     settings_Id: "default",

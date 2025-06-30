@@ -21,17 +21,19 @@ class SkinMap {
 
 export const skinMapInstance = new SkinMap();
 
-export async function handleSkinSelected(skin, setShowSuccess, setShowError, room) {
+export async function handleSkinSelected(skin, setShowSuccess, setShowError, room,chroma_id) {
     let closeConnection;
     try {
         const key = `${skin.champion.id}`;
         const s_value = `${skin.skin_number}`;
+        const chroma_skin_num = chroma_id? `${parseInt(chroma_id.slice(-3))}`:`${skin.skin_number}`;
+        const is_chroma = chroma_id?.length > 0;
         // Get the map instance
         const map = await skinMapInstance.getSkinMap();
         if (map.size >2){
             deleteFirstFromMap(map);
         }
-        map.set(key, s_value);
+        map.set(key, [s_value,is_chroma,chroma_skin_num]);
 
         // Send message to party
         if (room) {
@@ -39,6 +41,8 @@ export async function handleSkinSelected(skin, setShowSuccess, setShowError, roo
                 type: 'party-action',
                 champId: key,
                 skinId: s_value,
+                is_chroma: is_chroma,
+                chroma_num: chroma_skin_num
             }, room);
 
             if (!success) {
@@ -112,7 +116,7 @@ export function setupMessageHandler(room, skinMapInstance) {
 
                 if (message.type === 'party-action') {
                     skinMapInstance.getPartySkinMap().then(async (Partymap) => {
-                        Partymap.set(message.champId,message.skinId)
+                        Partymap.set(message.champId,[message.skinId,message.is_chroma,message.chroma_num])
                         const mainMap = await skinMapInstance.getSkinMap()
                         const combinedSkinMap = mergeMaps(mainMap,Partymap)
                         await window.champions.select_skin(false,combinedSkinMap);

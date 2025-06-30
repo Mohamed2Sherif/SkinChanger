@@ -52,7 +52,7 @@ app.whenReady().then(async () => {
 
         return await get_champion_skins(champ_id);
     });
-    ipcMain.handle("select_skin", async (_event, isprimary:boolean,chamapId_Skin_Name_Map: Map<string, string>) => {
+    ipcMain.handle("select_skin", async (_event, isprimary:boolean,chamapId_Skin_Name_Map: Map<string, [string,boolean,string]>) => {
         return await queueService.addToQueue(chamapId_Skin_Name_Map,isprimary)
 
     })
