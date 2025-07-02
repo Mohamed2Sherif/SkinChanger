@@ -1,8 +1,8 @@
 import {PrismaClient} from '../prisma/src/generated/prisma/client';
-import axios from "axios";
 import path from "path";
 import EventEmitter from "events";
-import fs from 'fs/promises'; // use the promise-based fs
+import fs from 'fs/promises';
+import AxiosCustomInstance from "./c_axios"; // use the promise-based fs
 
 // Initialize EventEmitter
 const eventemitter = new EventEmitter();
@@ -75,12 +75,14 @@ class DatabaseSeeder {
     private apiVersion: string = "";
 
     private async getApiVersion(): Promise<string> {
-        const response = await axios.get("https://ddragon.leagueoflegends.com/api/versions.json");
+        const response = await AxiosCustomInstance.getInstance().get("https://ddragon.leagueoflegends.com/api/versions.json");
         return response.data[0];
     }
 
     private async getChampionDetails(champId: string): Promise<any> {
-        return axios.get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`)
+        return   AxiosCustomInstance.getInstance().get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`,{
+            timeout:10000
+        })
             .then(response => response.data.data);
     }
 
@@ -102,7 +104,6 @@ class DatabaseSeeder {
                 });
 
                 clearTimeout(timeout);
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -145,11 +146,14 @@ class DatabaseSeeder {
         this.apiVersion = await this.getApiVersion();
         const championsEndpoint = `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion.json`;
 
-        const response = await axios.get(championsEndpoint);
+        const response =  await AxiosCustomInstance.getInstance().get(championsEndpoint);
         const championsResponse = response.data.data;
 
         this.champions_list = await Promise.all(
             Object.values(championsResponse).map(async (champ: any) => {
+                // Add delay between champion requests (except first)
+                await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
+
                 const champInfo = await this.getChampionDetails(champ.id);
                 const tags = champInfo?.[champ.id]?.tags || [];
 
