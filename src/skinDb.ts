@@ -81,7 +81,7 @@ class DatabaseSeeder {
 
     private async getChampionDetails(champId: string): Promise<any> {
         return   AxiosCustomInstance.getInstance().get(`https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion/${champId}.json`,{
-            timeout:10000
+            timeout:20000
         })
             .then(response => response.data.data);
     }
@@ -141,55 +141,80 @@ class DatabaseSeeder {
             return false;
         }
     }
+    private async processWithRateLimit<T>(
+        items: any[],
+        processor: (item: any) => Promise<T>,
+        batchSize = 10,
+        delayBetweenBatches = 1000
+    ): Promise<T[]> {
+        const results: T[] = [];
+        for (let i = 0; i < items.length; i += batchSize) {
+            const batch = items.slice(i, i + batchSize);
+            const batchPromises = batch.map(item => processor(item));
 
+            try {
+                const batchResults = await Promise.all(batchPromises);
+                results.push(...batchResults);
+
+                // Add delay between batches if not the last batch
+                if (i + batchSize < items.length) {
+                    await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
+                }
+            } catch (error) {
+                console.error(`Error processing batch ${i / batchSize + 1}:`, error);
+                // Continue with next batch even if one fails
+            }
+        }
+        return results;
+    }
     public async fetchChampionsInfo(): Promise<void> {
         this.apiVersion = await this.getApiVersion();
         const championsEndpoint = `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/data/en_US/champion.json`;
 
         const response =  await AxiosCustomInstance.getInstance().get(championsEndpoint);
         const championsResponse = response.data.data;
+        const championsArray = Object.values(championsResponse);
+        // @ts-ignore
+        this.champions_list = await this.processWithRateLimit(
+            championsArray,
+            async (champ: any) => {
+                try {
+                    const champInfo = await this.getChampionDetails(champ.id);
+                    const tags = champInfo?.[champ.id]?.tags || [];
 
-        this.champions_list = await Promise.all(
-            Object.values(championsResponse).map(async (champ: any) => {
-                // Add delay between champion requests (except first)
-                await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
+                    // Process skins with smaller batch size and delays
+                    const skins = await this.processWithRateLimit(
+                        champInfo?.[champ.id]?.skins || [],
+                        async (skin: any) => ({
+                            skin_id: skin.id.toString(),
+                            name: skin.name,
+                            number: skin.num,
+                            memory_haschromas: await this.hasChromas(champ.key, skin.num),
+                            memory_chromas: await this.fetchChromas(champ.key, skin.num)
+                        }),
+                        10,  // 10 skins at a time
+                        50 // 500ms between skin batches
+                    );
 
-                const champInfo = await this.getChampionDetails(champ.id);
-                const tags = champInfo?.[champ.id]?.tags || [];
-
-                const roles = await Promise.all(
-                    tags.map(async (tag: string) => {
-                        const role = await prisma.role.findFirst({
-                            where: {role_name: tag}
-                        });
-                        return {
-                            role_id: role?.role_id || 0,
-                            role_name: role?.role_name || tag
-                        };
-                    })
-                ).then(results => results.filter(r => r.role_id !== 0));
-
-                // Process skins with proper async/await
-                const skins = await Promise.all(
-                    (champInfo?.[champ.id]?.skins || []).map(async (skin: any) => ({
-                        skin_id: skin.id.toString(),
-                        name: skin.name,
-                        number: skin.num,
-                        memory_haschromas: await this.hasChromas(champ.key, skin.num),
-                        memory_chromas: await this.fetchChromas(champ.key, skin.num)
-                    }))
-                );
-
-                return {
-                    id: parseInt(champ.key),
-                    champ_code: champ.id,
-                    champ_name: champ.name,
-                    image_url: `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/img/champion/${champ.image.full}`,
-                    roles,
-                    skins
-                };
-            })
+                    return {
+                        id: parseInt(champ.key),
+                        champ_code: champ.id,
+                        champ_name: champ.name,
+                        image_url: `https://ddragon.leagueoflegends.com/cdn/${this.apiVersion}/img/champion/${champ.image.full}`,
+                        skins
+                    };
+                } catch (error) {
+                    console.error(`Error processing champion ${champ.id}:`, error);
+                    return null; // or some default value
+                }
+            },
+            10,
+            500
         );
+
+        // Filter out any failed champions
+        this.champions_list = this.champions_list.filter(champ => champ !== null);
+
     }
 
     public async seedRoles() {
@@ -227,15 +252,15 @@ class DatabaseSeeder {
                         skins: {
                             create: formatSkins(champ.skins, champ.id)
                         },
-                        roles: {
-                            create: champ.roles.map(role => ({
-                                role: {
-                                    connect: {
-                                        role_id: role.role_id
-                                    }
-                                },
-                            })),
-                        }
+                        // roles: {
+                        //     create: champ.roles.map(role => ({
+                        //         role: {
+                        //             connect: {
+                        //                 role_id: role.role_id
+                        //             }
+                        //         },
+                        //     })),
+                        // }
                     }
                 });
             })
